@@ -1,0 +1,13 @@
+.app {
+  background-color: #f0f2f5;
+}
+.header {
+  height: 46px;
+}
+.content {
+  background-color: #ffffff;
+  margin: 0 50px;
+}
+.footer {
+  text-align: center;
+}
