@@ -1,41 +1,29 @@
 import React, { Component } from "react";
 import { Table } from "antd";
 
+import { bindActionCreators, Dispatch } from "redux";
+import { connect } from "react-redux";
+
 import QueryForm from "./queryForm";
 import { employeeColumns } from "./colums";
-import { EmployeeResponse  } from "../../interface/emplayee";
+import { EmployeeResponse, EmployeeRequest } from "../../interface/emplayee";
+import { getEmployee } from "../../redux/employee";
 import "./index.css";
 
-interface State {
-  employee: EmployeeResponse;
+interface Props {
+  onGetEmployee(param: EmployeeRequest): void;
+  employeeList: EmployeeResponse;
 }
 
-class Employee extends Component<{}, State> {
-  state: State = {
-    employee: undefined,
-  };
-  setEmployee = (employee: EmployeeResponse) => {
-    this.setState({
-      employee,
-    });
-  };
-  totolEmployee() {
-    let total: number;
-    if (typeof this.state.employee !== "undefined") {
-      total = this.state.employee.length;
-    } else {
-      total = 0;
-    }
-    return <p>共 {total} 名员工</p>;
-  }
+class Employee extends Component<Props> {
   render() {
+    const { employeeList, onGetEmployee } = this.props;
     return (
       <main className="main">
-        <QueryForm onDataChange={this.setEmployee} />
-        {this.totolEmployee()}
+        <QueryForm getData={onGetEmployee} />
         <Table
           columns={employeeColumns}
-          dataSource={this.state.employee}
+          dataSource={employeeList}
           className="table"
         />
       </main>
@@ -43,4 +31,16 @@ class Employee extends Component<{}, State> {
   }
 }
 
-export default Employee;
+const mapStateToProps = (state: any) => ({
+  employeeList: state.employee.employeeList,
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) =>
+  bindActionCreators(
+    {
+      onGetEmployee: getEmployee,
+    },
+    dispatch
+  );
+
+export default connect(mapStateToProps, mapDispatchToProps)(Employee);

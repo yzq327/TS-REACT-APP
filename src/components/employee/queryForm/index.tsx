@@ -2,14 +2,12 @@ import React, { Component } from "react";
 import { Form, Input, Select, Button } from "antd";
 import { FormComponentProps } from "antd/lib/form";
 
-import { EmployeeRequest, EmployeeResponse } from "../../../interface/emplayee";
-import { GET_EMPLOYEE_URL } from "../../../constants/urls";
-import { get } from "../../../utils/request";
+import { EmployeeRequest } from "../../../interface/emplayee";
 
 const { Option } = Select;
 
 interface Props extends FormComponentProps {
-  onDataChange(employee: EmployeeResponse): void;
+  getData(Param: EmployeeRequest): void;
 }
 
 class QueryForm extends Component<Props, EmployeeRequest> {
@@ -24,17 +22,14 @@ class QueryForm extends Component<Props, EmployeeRequest> {
     this.setState({ departmentId: value });
   };
   handleClick = () => {
-    this.queryDepartment(this.state);
+    this.queryEmployee(this.state);
   };
   componentDidMount() {
-    this.queryDepartment(this.state);
+    this.queryEmployee(this.state);
   }
-  queryDepartment = (param: EmployeeRequest) => {
-    console.log(param);
-    get(GET_EMPLOYEE_URL, param).then((response) => {
-      this.props.onDataChange(response.data);
-    });
-  };
+  queryEmployee(param: EmployeeRequest) {
+    this.props.getData(param);
+  }
 
   render() {
     return (
@@ -63,7 +58,7 @@ class QueryForm extends Component<Props, EmployeeRequest> {
           </Select>
         </Form.Item>
         <Form.Item>
-          <Button type="primary" onClick={this.handleClick}>
+          <Button type="primary" icon="search" onClick={this.handleClick}>
             查询
           </Button>
         </Form.Item>

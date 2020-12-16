@@ -33,21 +33,20 @@ type State = Readonly<{
 
 type Action = {
   type: string;
-  payload: any;
+  payload: EmployeeResponse;
 };
 
 const initialState: State = {
   employeeList: undefined,
 };
 
-export function getEmployee(param: EmployeeRequest, callback: () => void) {
+export function getEmployee(param: EmployeeRequest) {
   return (dispatch: Dispatch) => {
     get(GET_EMPLOYEE_URL, param).then((res) => {
       dispatch({
         type: GET_EMPLOYEE,
         payload: res.data,
       });
-      callback();
     });
   };
 }
@@ -107,33 +106,6 @@ export default function (state = initialState, action: Action) {
       return {
         ...state,
         employeeList: newList,
-      };
-    case DELETE_EMPLOYEE:
-      let reducedList = [...(state.employeeList as EmployeeInfo[])];
-      _.remove(reducedList, (item: EmployeeInfo) => {
-        return item.id === action.payload;
-      });
-      return {
-        ...state,
-        employeeList: reducedList,
-      };
-    case UPDATE_EMPLOYEE:
-      let updatedList = [...(state.employeeList as EmployeeInfo[])];
-      let item: UpdateRequest = action.payload;
-      let index = _.findIndex(updatedList, {
-        id: item.id,
-      });
-      updatedList[index] = {
-        id: item.id,
-        key: item.id,
-        name: item.name,
-        department: department[item.departmentId],
-        hiredate: item.hiredate,
-        level: level[item.levelId],
-      };
-      return {
-        ...state,
-        employeeList: updatedList,
       };
     default:
       return state;
