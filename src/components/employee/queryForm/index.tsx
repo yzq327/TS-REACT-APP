@@ -31,6 +31,13 @@ class QueryForm extends Component<Props, EmployeeRequest> {
     this.props.getData(param);
   }
 
+  handleReset = () => {
+    this.setState({
+      name: "",
+      departmentId: undefined,
+    });
+  };
+
   render() {
     return (
       <Form layout="inline">
@@ -63,7 +70,7 @@ class QueryForm extends Component<Props, EmployeeRequest> {
           </Button>
         </Form.Item>
         <Form.Item>
-          <Button>重置</Button>
+          <Button onClick={this.handleReset}>重置</Button>
         </Form.Item>
       </Form>
     );

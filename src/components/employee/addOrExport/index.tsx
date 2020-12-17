@@ -3,7 +3,7 @@ import { Select, Input, Button, Modal, DatePicker } from "antd";
 
 import "./index.css";
 const { Option } = Select;
-const width = 300;
+const width = 250;
 class AddAndExport extends React.Component {
   state = {
     modalVisible: false,
