@@ -1,0 +1,9 @@
+.buttons {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.modal-content {
+  margin-bottom: 20px;
+}

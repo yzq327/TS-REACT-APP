@@ -5,9 +5,10 @@ import { bindActionCreators, Dispatch } from "redux";
 import { connect } from "react-redux";
 
 import QueryForm from "./queryForm";
-import { employeeColumns } from "./colums";
+import getColunms from "./colums";
 import { EmployeeResponse, EmployeeRequest } from "../../interface/emplayee";
 import { getEmployee } from "../../redux/employee";
+import AddAndExport from "./addOrExport";
 import "./index.css";
 
 interface Props {
@@ -16,13 +17,27 @@ interface Props {
 }
 
 class Employee extends Component<Props> {
+  handleDelete = () => {
+    console.log("delete");
+    // this.props.onDeleteEmployee(param);
+  };
+  handleUpdate = () => {
+    // this.setState({
+    //   showModal: true,
+    //   edit: true,
+    //   rowData: record,
+    // });
+    console.log("update");
+  };
+
   render() {
     const { employeeList, onGetEmployee } = this.props;
     return (
       <main className="main">
         <QueryForm getData={onGetEmployee} />
+        <AddAndExport />
         <Table
-          columns={employeeColumns}
+          columns={getColunms(this.handleUpdate, this.handleDelete)}
           dataSource={employeeList}
           className="table"
         />

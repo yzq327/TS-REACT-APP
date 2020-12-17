@@ -62,6 +62,9 @@ class QueryForm extends Component<Props, EmployeeRequest> {
             查询
           </Button>
         </Form.Item>
+        <Form.Item>
+          <Button>重置</Button>
+        </Form.Item>
       </Form>
     );
   }
