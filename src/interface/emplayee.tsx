@@ -1,20 +1,21 @@
+// getEmployee
 export interface EmployeeRequest {
-  name: string;
-  departmentId: number | undefined;
+  name?: string;
+  departmentId?: number;
 }
-
 export interface EmployeeInfo {
   id: number;
   key: number;
   name: string;
   department: string;
+  departmentId: number;
   hiredate: string;
   level: string;
+  levelId: number;
 }
-
 export type EmployeeResponse = EmployeeInfo[] | undefined;
 
-// createEmployee;
+// createEmployee
 export interface CreateRequest {
   name: string;
   departmentId: number;

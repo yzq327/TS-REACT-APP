@@ -7,7 +7,8 @@ import { EmployeeRequest } from "../../../interface/emplayee";
 const { Option } = Select;
 
 interface Props extends FormComponentProps {
-  getData(Param: EmployeeRequest): void;
+  getData(param: EmployeeRequest, callback: () => void): void;
+  setLoading(loading: boolean): void;
 }
 
 class QueryForm extends Component<Props, EmployeeRequest> {
@@ -28,7 +29,10 @@ class QueryForm extends Component<Props, EmployeeRequest> {
     this.queryEmployee(this.state);
   }
   queryEmployee(param: EmployeeRequest) {
-    this.props.getData(param);
+    this.props.setLoading(true);
+    this.props.getData(param, () => {
+      this.props.setLoading(false);
+    });
   }
 
   handleReset = () => {

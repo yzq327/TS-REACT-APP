@@ -1,107 +1,126 @@
 import React, { Component } from "react";
-import { Table, Modal, Input, Select, DatePicker } from "antd";
+import { Table, Modal, Input, Select, DatePicker, Button } from "antd";
 
 import { bindActionCreators, Dispatch } from "redux";
 import { connect } from "react-redux";
 
 import QueryForm from "./queryForm";
 import getColunms from "./colums";
-import { EmployeeResponse, EmployeeRequest } from "../../interface/emplayee";
-import { getEmployee } from "../../redux/employee";
-import AddAndExport from "./addOrExport";
+import {
+  EmployeeResponse,
+  EmployeeRequest,
+  EmployeeInfo,
+  CreateRequest,
+  DeleteRequest,
+  UpdateRequest,
+} from "../../interface/emplayee";
+import {
+  createEmployee,
+  getEmployee,
+  deleteEmployee,
+  updateEmployee,
+} from "../../redux/employee";
+import InfoModal from "./infnModal";
+import { DOWNLOAD_EMPLOYEE_URL } from "../../constants/urls";
 import "./index.css";
 
 interface Props {
-  onGetEmployee(param: EmployeeRequest): void;
+  onGetEmployee(param: EmployeeRequest, callback: () => void): void;
+  onCreateEmployee(param: CreateRequest, callback: () => void): void;
+  onDeleteEmployee(param: DeleteRequest): void;
+  onUpdateEmployee(param: UpdateRequest, callback: () => void): void;
   employeeList: EmployeeResponse;
 }
 
 interface State {
-  modalVisible: Boolean;
+  loading: boolean;
+  showModal: Boolean;
+  edit: boolean;
+  rowData: Partial<EmployeeInfo>;
 }
-
-const { Option } = Select;
-const width = 250;
 
 class Employee extends Component<Props, State> {
   state = {
-    modalVisible: false,
+    loading: false,
+    showModal: false,
+    edit: false,
+    rowData: {},
   };
 
-  handleDelete = () => {
-    console.log("delete");
-    // this.props.onDeleteEmployee(param);
+  setLoading = (loading: boolean) => {
+    this.setState({
+      loading,
+    });
+  };
+
+  hideModal = () => {
+    this.setState({
+      showModal: false,
+      rowData: {},
+    });
+  };
+
+  handleCreate = () => {
+    this.setState({
+      showModal: true,
+      edit: false,
+      rowData: {},
+    });
+  };
+
+  handleUpdate = (record: EmployeeInfo) => {
+    this.setState({
+      showModal: true,
+      edit: true,
+      rowData: record,
+    });
+  };
+
+  handleDelete = (param: DeleteRequest) => {
+    this.props.onDeleteEmployee(param);
   };
 
   setModal1Visible(param: boolean) {
     this.setState({
-      modalVisible: true,
+      showModal: param,
     });
-  }
-  handleUpdate = () => {
-    this.setState({
-      modalVisible: true,
-      // edit: true,
-      // rowData: record,
-    });
-    console.log("update");
-  };
-  onChangeDate(date: any, dateString: any) {
-    console.log(date, dateString);
   }
 
+  handleDownload = () => {
+    window.open(DOWNLOAD_EMPLOYEE_URL);
+  };
+
   render() {
-    const { employeeList, onGetEmployee } = this.props;
+    const {
+      employeeList,
+      onGetEmployee,
+      onCreateEmployee,
+      onUpdateEmployee,
+    } = this.props;
     return (
       <main className="main">
-        <QueryForm getData={onGetEmployee} />
-        <AddAndExport />
+        <QueryForm getData={onGetEmployee} setLoading={this.setLoading} />
+        <div className="buttons">
+          <Button type="primary" icon="plus" onClick={this.handleCreate}>
+            添加新员工
+          </Button>
+          <Button type="primary" icon="download" onClick={this.handleDownload}>
+            导出
+          </Button>
+        </div>
+        <InfoModal
+          visible={this.state.showModal}
+          edit={this.state.edit}
+          rowData={this.state.rowData}
+          hide={this.hideModal}
+          createData={onCreateEmployee}
+          updateData={onUpdateEmployee}
+        />
         <Table
           columns={getColunms(this.handleUpdate, this.handleDelete)}
           dataSource={employeeList}
           className="table"
         />
-        <Modal
-          title="编辑"
-          style={{ top: 20 }}
-          visible={this.state.modalVisible}
-          onOk={() => this.setModal1Visible(false)}
-          onCancel={() => this.setModal1Visible(false)}
-        >
-          <Input
-            placeholder="姓名"
-            style={{ width: width }}
-            className="modal-content"
-          />
-          <Select
-            placeholder="部门"
-            allowClear
-            style={{ width: width }}
-            className="modal-content"
-          >
-            <Option value={1}>技术部</Option>
-            <Option value={2}>产品部</Option>
-            <Option value={3}>市场部</Option>
-            <Option value={4}>运营部</Option>
-          </Select>
-          <DatePicker
-            onChange={this.onChangeDate}
-            placeholder="入职时间"
-            style={{ width: width }}
-            className="modal-content"
-          />
-          <Select
-            placeholder="职级"
-            allowClear
-            style={{ width: width }}
-            className="modal-content"
-          >
-            <Option value={1}>1级</Option>
-            <Option value={2}>2级</Option>
-            <Option value={3}>3级</Option>
-            <Option value={4}>4级</Option>
-          </Select>
-        </Modal>
       </main>
     );
   }
@@ -115,6 +134,9 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
   bindActionCreators(
     {
       onGetEmployee: getEmployee,
+      onCreateEmployee: createEmployee,
+      onUpdateEmployee: updateEmployee,
+      onDeleteEmployee: deleteEmployee,
     },
     dispatch
   );

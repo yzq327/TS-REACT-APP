@@ -5,3 +5,9 @@
 .table {
   margin-top: 20px;
 }
+
+.buttons {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+}
